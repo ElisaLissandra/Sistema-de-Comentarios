@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\CommentCreated;
+use App\Listeners\SendCommentNotification;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -32,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
 
 
         Relation::enforceMorphMap([
+            'User' => 'App\Models\User',
             'Post' => 'App\Models\Post',
             'Product' => 'App\Models\Product',
         ]);
@@ -43,6 +47,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
     }
 }

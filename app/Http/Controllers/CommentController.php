@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CommentCreated;
 use App\Exceptions\CustomException;
 use App\Http\Requests\CommentRequest;
 use App\Interfaces\CommentRepositoryInterface;
@@ -52,11 +53,14 @@ class CommentController extends Controller
             $payload['commentable_id'] = $post->id;
             $payload['commentable_type'] = 'Post';
 
-            $post = $this->commentRepository->store($payload);
+            $comment = $this->commentRepository->store($payload);
+
+            $comment->load('commentable.user');
+            event(new CommentCreated($comment));
 
             DB::commit();
 
-            return $this->defaultResponse->successWithContent('Comentário criado com sucesso no post', 201, $post);
+            return $this->defaultResponse->successWithContent('Comentário criado com sucesso no post', 201, $comment);
         }catch (\Exception $e) {
             DB::rollBack();
            throw new CustomException($e->getMessage(), $e->getCode());
@@ -67,18 +71,21 @@ class CommentController extends Controller
     {
         try{
             DB::beginTransaction();
-          
+            
             $payload = $request->validated();
 
             $payload['user_id'] = auth()->user()->id;
             $payload['commentable_id'] = $product->id;
             $payload['commentable_type'] = 'Product';
 
-            $product = $this->commentRepository->store($payload);
+            $comment = $this->commentRepository->store($payload);
 
+            $comment->load('commentable.user');
+            event(new CommentCreated($comment));
+        
             DB::commit();
 
-            return $this->defaultResponse->successWithContent('Comentário criado com sucesso no produto', 201, $product);
+            return $this->defaultResponse->successWithContent('Comentário criado com sucesso no produto', 201, $comment);
         }catch (\Exception $e) {
             DB::rollBack();
            throw new CustomException($e->getMessage(), $e->getCode());

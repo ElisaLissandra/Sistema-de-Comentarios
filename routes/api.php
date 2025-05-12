@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
@@ -51,4 +52,9 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/products/{product}/comments', [CommentController::class, 'showProductComments']);
     Route::get('/posts/{post}/comments', [CommentController::class, 'showPostComments']);
 
+    Route::prefix('/notification')->group(function(){
+        Route::get('/', [NotificationController::class, 'index']);
+        Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+        Route::post('/{notification}/mark-read', [NotificationController::class, 'markAsRead']);
+    });
 });
