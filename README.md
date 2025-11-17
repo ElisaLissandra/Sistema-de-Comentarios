@@ -1,63 +1,141 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Sistema de Comentários API
 
-## About Laravel
+Esta é uma API RESTful construída com Laravel para gerenciar um sistema de comentários para posts e produtos. Ela inclui autenticação de usuário, operações CRUD para posts e produtos, e um sistema de comentários polimórfico, além de notificações em tempo real.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Funcionalidades
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Autenticação:** Registro de usuário, login e logout usando JWT.
+- **Posts:** Operações CRUD completas (Criar, Ler, Atualizar, Deletar) para posts.
+- **Produtos:** Operações CRUD completas para produtos.
+- **Comentários:** Adicione comentários a posts ou produtos (relação polimórfica).
+- **Notificações:** Usuários são notificados quando seus posts ou produtos recebem novos comentários.
+- **Soft Deletes:** Posts, produtos e comentários podem ser "deletados" de forma suave (soft deleted) e restaurados.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Tecnologias Utilizadas
 
-## Learning Laravel
+- **Backend:** PHP 8.2, Laravel 12
+- **Autenticação:** `php-open-source-saver/jwt-auth`
+- **Banco de Dados:** SQLite (padrão), mas pode ser configurado para MySQL, PostgreSQL, etc.
+- **Testes:** PHPUnit
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Pré-requisitos
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- PHP >= 8.2
+- Composer
+- Um banco de dados de sua escolha (o padrão é SQLite)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Instalação e Configuração
 
-## Laravel Sponsors
+1.  **Clone o repositório:**
+    ```bash
+    git clone https://github.com/seu-usuario/seu-repositorio.git
+    cd seu-repositorio
+    ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+2.  **Instale as dependências do PHP:**
+    ```bash
+    composer install
+    ```
 
-### Premium Partners
+3.  **Configure o ambiente:**
+    - Copie o arquivo de ambiente de exemplo:
+      ```bash
+      cp .env.example .env
+      ```
+    - Gere a chave da aplicação:
+      ```bash
+      php artisan key:generate
+      ```
+    - Gere a chave secreta do JWT:
+      ```bash
+      php artisan jwt:secret
+      ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development/)**
-- **[Active Logic](https://activelogic.com)**
+4.  **Configure o Banco de Dados:**
+    - Crie um arquivo de banco de dados SQLite:
+      ```bash
+      touch database/database.sqlite
+      ```
+    - Ou configure suas credenciais de banco de dados no arquivo `.env` se estiver usando outro SGBD.
 
-## Contributing
+5.  **Execute as migrações e semeie o banco de dados:**
+    Isso criará as tabelas e um usuário de teste.
+    ```bash
+    php artisan migrate --seed
+    ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Executando a Aplicação
 
-## Code of Conduct
+Para iniciar o servidor da aplicação, execute:
+```bash
+php artisan serve
+```
+O servidor estará disponível em `http://127.0.0.1:8000`.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Para processar as notificações na fila (que são geradas quando um comentário é criado), execute em um terminal separado:
+```bash
+php artisan queue:listen
+```
 
-## Security Vulnerabilities
+## Endpoints da API
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Todas as rotas (exceto login/registro) requerem um token JWT no cabeçalho `Authorization` como `Bearer <token>`.
 
-## License
+### Autenticação
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# Sistema-Coment-rios
-# Sistema-de-Comentarios
+- `POST /api/register`: Registra um novo usuário.
+- `POST /api/login`: Autentica um usuário e retorna um token JWT.
+- `GET /api/logout`: Invalida o token do usuário autenticado.
+- `GET /api/user`: Retorna as informações do usuário autenticado.
+
+### Posts
+
+- `GET /api/posts`: Lista todos os posts.
+- `POST /api/posts`: Cria um novo post.
+- `GET /api/posts/{post}`: Mostra um post específico.
+- `PUT /api/posts/{post}`: Atualiza um post.
+- `DELETE /api/posts/{post}`: Deleta um post (soft delete).
+- `POST /api/posts/{id}/restore`: Restaura um post deletado.
+- `DELETE /api/posts/{id}/force-delete`: Deleta um post permanentemente.
+
+### Produtos
+
+- `GET /api/products`: Lista todos os produtos.
+- `POST /api/products`: Cria um novo produto.
+- `GET /api/products/{product}`: Mostra um produto específico.
+- `PUT /api/products/{product}`: Atualiza um produto.
+- `DELETE /api/products/{product}`: Deleta um produto (soft delete).
+- `POST /api/products/{id}/restore`: Restaura um produto deletado.
+- `DELETE /api/products/{id}/force-delete`: Deleta um produto permanentemente.
+
+### Comentários
+
+- `POST /api/posts/{post}/comments`: Adiciona um comentário a um post.
+- `POST /api/products/{product}/comments`: Adiciona um comentário a um produto.
+- `GET /api/posts/{post}/comments`: Lista os comentários de um post.
+- `GET /api/products/{product}/comments`: Lista os comentários de um produto.
+- `DELETE /api/posts/comments/{comment}`: Deleta um comentário de um post.
+- `DELETE /api/products/comments/{comment}`: Deleta um comentário de um produto.
+- `POST /api/posts/comments/{id}/restore`: Restaura um comentário de um post.
+- `POST /api/products/comments/{id}/restore`: Restaura um comentário de um produto.
+- `DELETE /api/posts/comments/{id}/force-delete`: Deleta permanentemente um comentário de um post.
+- `DELETE /api/products/comments/{id}/force-delete`: Deleta permanentemente um comentário de um produto.
+
+### Notificações
+
+- `GET /api/notification`: Lista as notificações do usuário autenticado.
+- `POST /api/notification/mark-all-read`: Marca todas as notificações como lidas.
+- `POST /api/notification/{notification}/mark-read`: Marca uma notificação específica como lida.
+
+## Executando os Testes
+
+Para rodar a suíte de testes automatizados, use o seguinte comando:
+
+```bash
+composer run test
+```
+ou
+```bash
+php artisan test
+```
