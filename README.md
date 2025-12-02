@@ -14,7 +14,7 @@ Esta é uma API RESTful construída com Laravel para gerenciar um sistema de com
 
 ## Tecnologias Utilizadas
 
-- **Backend:** PHP 8.2, Laravel 12
+- **Backend:** PHP 8.2, Laravel 11
 - **Autenticação:** `php-open-source-saver/jwt-auth`
 - **Banco de Dados:** SQLite (padrão), mas pode ser configurado para MySQL, PostgreSQL, etc.
 - **Testes:** PHPUnit
